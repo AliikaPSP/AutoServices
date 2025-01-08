@@ -1,3 +1,6 @@
+using AutoServices.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace AutoServices
 {
     public class Program
@@ -8,6 +11,8 @@ namespace AutoServices
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<AutoServicesContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
