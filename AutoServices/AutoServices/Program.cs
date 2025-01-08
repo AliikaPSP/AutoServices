@@ -1,5 +1,9 @@
+using AutoServices.ApplicationServices.Services;
+using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoServices.Core.Domain;
+using Microsoft.Extensions.Configuration;
 
 namespace AutoServices
 {
@@ -11,6 +15,8 @@ namespace AutoServices
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ICarsServices, CarsServices>();
+
             builder.Services.AddDbContext<AutoServicesContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
