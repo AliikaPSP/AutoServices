@@ -33,4 +33,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AutoServices.Data\AutoServices.Data.csproj" />
+  </ItemGroup>
+
 </Project>
