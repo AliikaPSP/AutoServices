@@ -32,7 +32,6 @@ else
                 <input asp-for="Year" class="form-control" />
             </div>
         </div>
-        <input asp-action="update" asp-controller="cars" type="submit" class="btn btn-primary" value="Update" />
         @if (Model.Id.HasValue)
         {
             <input asp-action="update" asp-controller="cars" type="submit" class="btn btn-primary" value="Update" />
