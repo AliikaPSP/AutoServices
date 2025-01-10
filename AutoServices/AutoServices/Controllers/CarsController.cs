@@ -12,14 +12,17 @@ namespace AutoServices.Controllers
     {
         private readonly AutoServicesContext _context;
         private readonly ICarsServices _carsServices;
+        private readonly IFileServices _fileServices;
         public CarsController
             (
             AutoServicesContext context,
-            ICarsServices carsServices
+            ICarsServices carsServices,
+            IFileServices fileServices
             )
         {
             _context = context;
             _carsServices = carsServices;
+            _fileServices = fileServices;
         }
 
         public IActionResult Index()
@@ -186,6 +189,20 @@ namespace AutoServices.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index), vm);
+        }
+
+        public async Task<IActionResult> RemoveImage(ImageViewModel vm)
+        {
+            var dto = new FileToApiDto()
+            {
+                Id = vm.ImageId
+            };
+            var image = await _fileServices.RemoveImageFromApi(dto);
+            if (image == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
         }
 
     }

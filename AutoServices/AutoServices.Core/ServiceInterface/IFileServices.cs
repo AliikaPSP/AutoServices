@@ -12,5 +12,6 @@ namespace AutoServices.Core.ServiceInterface
     {
         void FilesToApi(CarDto dto, Car car);
         Task<List<FileToApi>> RemoveImagesFromApi(FileToApiDto[] dtos);
+        Task<FileToApi> RemoveImageFromApi(FileToApiDto dtos);
     }
 }
