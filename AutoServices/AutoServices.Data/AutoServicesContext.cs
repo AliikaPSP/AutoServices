@@ -14,5 +14,6 @@ namespace AutoServices.Data
         public AutoServicesContext(DbContextOptions<AutoServicesContext> options)
             : base(options) { }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<FileToApi> FileToApis { get; set; }
     }
 }
