@@ -1,6 +1,14 @@
 ﻿@model AutoServices.Models.Cars.CarCreateUpdateViewModel
 
 <h1>Update</h1>
+@if (Model.Id.HasValue)
+{
+    <h1>Update</h1>
+}
+else
+{
+    <h1>Create</h1>
+}
 <div>
     <form method="post" enctype="multipart/form-data">
         <input asp-for="Id" type="hidden" />
@@ -25,5 +33,13 @@
             </div>
         </div>
         <input asp-action="update" asp-controller="cars" type="submit" class="btn btn-primary" value="Update" />
+        @if (Model.Id.HasValue)
+        {
+            <input asp-action="update" asp-controller="cars" type="submit" class="btn btn-primary" value="Update" />
+        }
+        else
+        {
+            <input asp-action="create" asp-controller="cars" type="submit" class="btn btn-primary" value="Create" />
+        }
     </form>
 </div>

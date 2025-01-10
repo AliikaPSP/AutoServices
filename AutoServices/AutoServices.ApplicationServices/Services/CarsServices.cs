@@ -44,5 +44,29 @@ namespace AutoServices.ApplicationServices.Services
             await _context.SaveChangesAsync();
             return domain;
         }
+
+        public async Task<Car> Delete(Guid id)
+        {
+            var car = await _context.Cars
+                .FirstOrDefaultAsync(x => x.Id == id);
+            _context.Cars.Remove(car);
+            await _context.SaveChangesAsync();
+            return car;
+        }
+
+        public async Task<Car> Create(CarDto dto)
+        {
+           Car car = new Car();
+            car.Id = Guid.NewGuid();
+            car.Make = dto.Make;
+            car.Model = dto.Model;
+            car.Year = dto.Year;
+            car.CreatedAt = DateTime.Now;
+            car.ModifiedAt = DateTime.Now;
+            await _context.Cars.AddAsync(car);
+            await _context.SaveChangesAsync();
+            return car;
+        }
+
     }
 }

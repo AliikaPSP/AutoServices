@@ -88,5 +88,59 @@ namespace AutoServices.Controllers
             }
             return RedirectToAction(nameof(Index), vm);
         }
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var car = await _carsServices.DetailAsync(id);
+            if (car == null)
+            {
+                return NotFound();
+            }
+            var vm = new CarDeleteViewModel();
+            vm.Id = car.Id;
+            vm.Make = car.Make;
+            vm.Model = car.Model;
+            vm.Year = car.Year;
+            vm.CreatedAt = car.CreatedAt;
+            vm.ModifiedAt = car.ModifiedAt;
+            return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmation(Guid id)
+        {
+            var carId = await _carsServices.Delete(id);
+            if (carId == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            CarCreateUpdateViewModel result = new();
+            return View("CreateUpdate", result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(CarCreateUpdateViewModel vm)
+        {
+            var dto = new CarDto()
+            {
+                Id = vm.Id,
+                Make = vm.Make,
+                Model = vm.Model,
+                Year = vm.Year,
+                CreatedAt = vm.CreatedAt,
+                ModifiedAt = vm.ModifiedAt,
+            };
+            var result = await _carsServices.Create(dto);
+            if (result == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index), vm);
+        }
+
     }
 }
