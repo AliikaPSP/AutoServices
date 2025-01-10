@@ -1,5 +1,6 @@
 ﻿using AutoServices.Core.Domain;
 using AutoServices.Core.Dto;
+using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace AutoServices.ApplicationServices.Services
 {
-    public class FileServices
+    public class FileServices : IFileServices
     {
         private readonly IHostEnvironment _webHost;
         private readonly AutoServicesContext _context;
