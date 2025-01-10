@@ -4,6 +4,7 @@ using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using AutoServices.Models.Cars;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoServices.Controllers
 {
@@ -42,12 +43,21 @@ namespace AutoServices.Controllers
             {
                 return View("Error");
             }
+            var images = await _context.FileToApis
+                .Where(x => x.CarId == id)
+                .Select(y => new ImageViewModel
+                {
+                    FilePath = y.ExistingFilePath,
+                    ImageId = y.Id,
+                }).ToArrayAsync();
+
             var vm = new CarsDetailsViewModel();
             vm.Make = cars.Make;
             vm.Model = cars.Model;
             vm.Year = cars.Year;
             vm.CreatedAt = cars.CreatedAt;
             vm.ModifiedAt = cars.ModifiedAt;
+            vm.Images.AddRange(images);
             return View(vm);
 
         }
@@ -60,6 +70,16 @@ namespace AutoServices.Controllers
             {
                 return NotFound();
             }
+
+
+            var images = await _context.FileToApis
+                .Where(x => x.CarId == id)
+                .Select(y => new ImageViewModel
+                {
+                    FilePath = y.ExistingFilePath,
+                    ImageId = y.Id
+                }).ToArrayAsync();
+
             var vm = new CarCreateUpdateViewModel();
             vm.Id = car.Id;
             vm.Make = car.Make;
@@ -67,6 +87,7 @@ namespace AutoServices.Controllers
             vm.Year = car.Year;
             vm.CreatedAt = car.CreatedAt;
             vm.ModifiedAt = car.ModifiedAt;
+            vm.Image.AddRange(images);
             return View("CreateUpdate", vm);
         }
         [HttpPost]
@@ -80,6 +101,14 @@ namespace AutoServices.Controllers
                 Year = vm.Year,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
+                Files = vm.Files,
+                FilesToApiDtos = vm.Image
+                    .Select(x => new FileToApiDto
+                    {
+                        Id = x.ImageId,
+                        ExistingFilePath = x.FilePath,
+                        CarId = x.CarId,
+                    }).ToArray()
             };
             var result = await _carsServices.Update(dto);
             if (result == null)
@@ -96,6 +125,14 @@ namespace AutoServices.Controllers
             {
                 return NotFound();
             }
+            var images = await _context.FileToApis
+                .Where(x => x.CarId == id)
+                .Select(y => new ImageViewModel
+                {
+                    FilePath = y.ExistingFilePath,
+                    ImageId = y.Id,
+                }).ToArrayAsync();
+
             var vm = new CarDeleteViewModel();
             vm.Id = car.Id;
             vm.Make = car.Make;
@@ -103,6 +140,7 @@ namespace AutoServices.Controllers
             vm.Year = car.Year;
             vm.CreatedAt = car.CreatedAt;
             vm.ModifiedAt = car.ModifiedAt;
+            vm.Images.AddRange(images);
             return View(vm);
         }
         [HttpPost]
@@ -133,6 +171,14 @@ namespace AutoServices.Controllers
                 Year = vm.Year,
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
+                Files = vm.Files,
+                FilesToApiDtos = vm.Image
+                    .Select(x => new FileToApiDto
+                    {
+                        Id = x.ImageId,
+                        ExistingFilePath = x.FilePath,
+                        CarId = x.CarId,
+                    }).ToArray()
             };
             var result = await _carsServices.Create(dto);
             if (result == null)

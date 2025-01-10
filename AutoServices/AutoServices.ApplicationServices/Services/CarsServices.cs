@@ -14,14 +14,17 @@ namespace AutoServices.ApplicationServices.Services
     public class CarsServices : ICarsServices
     {
         private readonly AutoServicesContext _context;
+        private readonly IFileServices _fileServices;
 
         public CarsServices
             (
-            AutoServicesContext context
+            AutoServicesContext context,
+            IFileServices fileServices
 
             )
         {
             _context = context;
+            _fileServices = fileServices;
         }
 
         public async Task <Car> DetailAsync(Guid id)
@@ -40,6 +43,7 @@ namespace AutoServices.ApplicationServices.Services
             domain.Year = dto.Year;
             domain.CreatedAt = dto.CreatedAt;
             domain.ModifiedAt = DateTime.Now;
+            _fileServices.FilesToApi(dto, domain);
             _context.Cars.Update(domain);
             await _context.SaveChangesAsync();
             return domain;
@@ -49,6 +53,15 @@ namespace AutoServices.ApplicationServices.Services
         {
             var car = await _context.Cars
                 .FirstOrDefaultAsync(x => x.Id == id);
+            var images = await _context.FileToApis
+                .Where(x => x.CarId == id)
+                .Select(y => new FileToApiDto
+                {
+                    Id = y.Id,
+                    CarId = y.CarId,
+                    ExistingFilePath = y.ExistingFilePath
+                }).ToArrayAsync();
+            await _fileServices.RemoveImagesFromApi(images);
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             return car;
@@ -63,6 +76,7 @@ namespace AutoServices.ApplicationServices.Services
             car.Year = dto.Year;
             car.CreatedAt = DateTime.Now;
             car.ModifiedAt = DateTime.Now;
+            _fileServices.FilesToApi(dto, car);
             await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
             return car;

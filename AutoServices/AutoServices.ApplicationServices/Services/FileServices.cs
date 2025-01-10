@@ -2,6 +2,7 @@
 using AutoServices.Core.Dto;
 using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,23 @@ namespace AutoServices.ApplicationServices.Services
                     _context.FileToApis.AddAsync(path);
                 }
             }
+        }
+        public async Task<List<FileToApi>> RemoveImagesFromApi(FileToApiDto[] dtos)
+        {
+            foreach (var dtosItem in dtos)
+            {
+                var imageId = await _context.FileToApis
+                    .FirstOrDefaultAsync(x => x.ExistingFilePath == dtosItem.ExistingFilePath);
+                var filePath = _webHost.ContentRootPath + "\\multipleFileUpload\\"
+                    + imageId.ExistingFilePath;
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                _context.FileToApis.Remove(imageId);
+                await _context.SaveChangesAsync();
+            }
+            return null;
         }
     }
 }

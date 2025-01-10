@@ -4,6 +4,7 @@ using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoServices.Core.Domain;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.FileProviders;
 
 namespace AutoServices
 {
@@ -16,6 +17,7 @@ namespace AutoServices
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddScoped<ICarsServices, CarsServices>();
+            builder.Services.AddScoped<IFileServices, FileServices>();
 
             builder.Services.AddDbContext<AutoServicesContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -32,6 +34,12 @@ namespace AutoServices
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider
+                (Path.Combine(builder.Environment.ContentRootPath, "multipleFileUpload")),
+                RequestPath = "/multipleFileUpload"
+            });
 
             app.UseRouting();
 
