@@ -24,6 +24,12 @@ namespace AutoServices
 
             var app = builder.Build();
 
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(@"C:\Dev\AutoServices\AutoServices\AutoServices\multipleFileUpload"),
+                RequestPath = "/uploads" // This is the virtual path to access the files
+            });
+
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
