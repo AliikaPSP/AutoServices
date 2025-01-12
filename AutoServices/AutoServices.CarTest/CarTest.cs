@@ -1,8 +1,6 @@
 using AutoServices.Core.Domain;
 using AutoServices.Core.Dto;
 using AutoServices.Core.ServiceInterface;
-using Microsoft.AspNetCore.Http;
-using System.Xml;
 
 namespace AutoServices.CarTest
 {
@@ -129,7 +127,7 @@ namespace AutoServices.CarTest
 
         private CarDto MockCarData2()
         {
-           CarDto car2 = new()
+            CarDto car2 = new()
             {
                 Make = "Hyundai",
                 Model = "Something",
@@ -147,7 +145,7 @@ namespace AutoServices.CarTest
                 Make = "BMW",
                 Model = "E46",
                 Year = 2004,
-                
+
                 CreatedAt = DateTime.Now.AddYears(-1),
                 ModifiedAt = DateTime.Now.AddYears(-1),
             };

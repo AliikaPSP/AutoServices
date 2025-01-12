@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AutoServices.Core.Dto
+﻿namespace AutoServices.Core.Dto
 {
     public class FileToApiDto
     {

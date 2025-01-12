@@ -2,16 +2,11 @@
 using AutoServices.CarTest.Macros;
 using AutoServices.CarTest.Mock;
 using AutoServices.Core.ServiceInterface;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoServices.Data;
 
 namespace AutoServices.CarTest
 {

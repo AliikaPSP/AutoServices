@@ -2,8 +2,6 @@ using AutoServices.ApplicationServices.Services;
 using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
-using AutoServices.Core.Domain;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.FileProviders;
 
 namespace AutoServices

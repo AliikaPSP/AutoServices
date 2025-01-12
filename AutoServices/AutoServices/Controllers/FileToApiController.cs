@@ -1,9 +1,7 @@
-﻿using AutoServices.Core.Domain;
-using AutoServices.Data;
+﻿using AutoServices.Data;
 using AutoServices.Models.Cars;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace AutoServices.Controllers
 {

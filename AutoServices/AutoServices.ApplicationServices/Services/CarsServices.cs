@@ -1,13 +1,8 @@
 ﻿using AutoServices.Core.Domain;
+using AutoServices.Core.Dto;
 using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoServices.Core.Dto;
 
 namespace AutoServices.ApplicationServices.Services
 {
@@ -27,7 +22,7 @@ namespace AutoServices.ApplicationServices.Services
             _fileServices = fileServices;
         }
 
-        public async Task <Car> DetailAsync(Guid id)
+        public async Task<Car> DetailAsync(Guid id)
         {
             var result = await _context.Cars
                 .FirstOrDefaultAsync(x => x.Id == id);
@@ -69,7 +64,7 @@ namespace AutoServices.ApplicationServices.Services
 
         public async Task<Car> Create(CarDto dto)
         {
-           Car car = new Car();
+            Car car = new Car();
             car.Id = Guid.NewGuid();
             car.Make = dto.Make;
             car.Model = dto.Model;
