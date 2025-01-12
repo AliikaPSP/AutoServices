@@ -25,27 +25,34 @@ namespace AutoServices.ApplicationServices.Services
             _webHost = webHost;
             _context = context;
         }
+
         public void FilesToApi(CarDto dto, Car car)
         {
-            if (!Directory.Exists(_webHost.ContentRootPath + "\\multipleFileUpload\\"))
+            if (dto.Files != null && dto.Files.Count > 0)
             {
-                Directory.CreateDirectory(_webHost.ContentRootPath + "\\multipleFileUpload\\");
-            }
-            foreach (var file in dto.Files)
-            {
-                string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "multipleFileUpload");
-                string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                if (!Directory.Exists(_webHost.ContentRootPath + "\\multipleFileUpload\\"))
                 {
-                    file.CopyTo(fileStream);
-                    FileToApi path = new FileToApi
+                    Directory.CreateDirectory(_webHost.ContentRootPath + "\\multipleFileUpload\\");
+                }
+
+                foreach (var file in dto.Files)
+                {
+                    string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "multipleFileUpload");
+                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
-                        Id = Guid.NewGuid(),
-                        ExistingFilePath = uniqueFileName,
-                        CarId = car.Id
-                    };
-                    _context.FileToApis.AddAsync(path);
+                        file.CopyTo(fileStream);
+                        FileToApi path = new FileToApi
+                        {
+                            Id = Guid.NewGuid(),
+                            ExistingFilePath = uniqueFileName,
+                            CarId = car.Id
+                        };
+
+                        _context.FileToApis.AddAsync(path);
+                    }
                 }
             }
         }
