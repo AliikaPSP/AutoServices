@@ -55,6 +55,7 @@ namespace AutoServices.Controllers
                 }).ToArrayAsync();
 
             var vm = new CarsDetailsViewModel();
+            vm.Id = cars.Id;
             vm.Make = cars.Make;
             vm.Model = cars.Model;
             vm.Year = cars.Year;

@@ -3,21 +3,19 @@
     int rowNumber = 1;
 }
 
-<div>
-    <a asp-action="create" asp-controller="Cars" type="submit" class="btn btn-primary">Create</a>
+<div class="h1 text-center mb-4">
+    <a asp-action="create" asp-controller="Cars" class="btn custom-btn btn-sm">Create</a>
 </div>
 
-<div class="h1">
-    Cars
-</div>
 <form method="post">
-    <table class="table table-hover">
-        <thead>
+    <table class="table table-striped table-bordered table-hover custom-table">
+        <thead class="thead-dark">
             <tr>
                 <th scope="col">Nr</th>
                 <th scope="col">Make</th>
                 <th scope="col">Model</th>
                 <th scope="col">Year</th>
+                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -29,12 +27,12 @@
                     <td>@cars.Model</td>
                     <td>@cars.Year</td>
                     <td>
-                        <a asp-action="details" asp-controller="cars" asp-route-id="@cars.Id" class="btn btn-info">Details</a>
-                        <a asp-action="update" asp-controller="cars" asp-route-id="@cars.Id" class="btn btn-primary">Update</a>
-                        <a asp-action="delete" asp-controller="cars" asp-route-id="@cars.Id" class="btn btn-danger">Delete</a>
+                        <a asp-action="details" asp-controller="cars" asp-route-id="@cars.Id" class="btn custom-btn btn-sm">Details</a>
+                        <a asp-action="update" asp-controller="cars" asp-route-id="@cars.Id" class="btn custom-btn btn-sm">Update</a>
+                        <a asp-action="delete" asp-controller="cars" asp-route-id="@cars.Id" class="btn custom-btn btn-sm">Delete</a>
                     </td>
                 </tr>
-                rowNumber += 1;
+                rowNumber++;
             }
         </tbody>
     </table>

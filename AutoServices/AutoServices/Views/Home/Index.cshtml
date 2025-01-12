@@ -3,6 +3,59 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4 welcome-heading">Welcome</h1>
 </div>
+
+<style>
+    .welcome-heading {
+        animation: fadeInSlide 1.5s ease-in-out;
+        font-weight: bold;
+        position: relative;
+    }
+    @@keyframes typing {
+        from {
+            width: 0;
+        }
+
+        to {
+            width: 100%;
+        }
+    }
+
+    @@keyframes blink {
+        50% {
+            border-color: transparent;
+        }
+    }
+
+    #typing-effect {
+        display: inline-block;
+        overflow: hidden;
+        white-space: nowrap;
+        border-right: 3px solid #000;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1.2rem;
+        animation: typing 4s steps(40, end), blink 0.75s step-end infinite;
+    }
+    @@keyframes fadeInSlide {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const typingEffect = document.getElementById('typing-effect');
+        typingEffect.style.visibility = 'hidden';
+        setTimeout(() => {
+            typingEffect.style.visibility = 'visible';
+        }, 1500);
+    });
+</script>
