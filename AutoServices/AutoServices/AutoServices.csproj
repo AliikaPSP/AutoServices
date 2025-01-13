@@ -40,8 +40,4 @@
     <ProjectReference Include="..\AutoServices.Data\AutoServices.Data.csproj" />
   </ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="multipleFileUpload\" />
-	</ItemGroup>
-
 </Project>

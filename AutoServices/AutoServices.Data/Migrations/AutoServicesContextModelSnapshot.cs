@@ -28,21 +28,19 @@ namespace AutoServices.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime?>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Make")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Model")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ModifiedAt")
+                    b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Year")
+                    b.Property<int?>("Year")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -50,7 +48,7 @@ namespace AutoServices.Data.Migrations
                     b.ToTable("Cars");
                 });
 
-            modelBuilder.Entity("AutoServices.Core.Domain.FileToApi", b =>
+            modelBuilder.Entity("AutoServices.Core.Domain.FileToDatabase", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,13 +57,31 @@ namespace AutoServices.Data.Migrations
                     b.Property<Guid?>("CarId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("ExistingFilePath")
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("ImageTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("FileToApis");
+                    b.HasIndex("CarId");
+
+                    b.ToTable("FileToDatabase");
+                });
+
+            modelBuilder.Entity("AutoServices.Core.Domain.FileToDatabase", b =>
+                {
+                    b.HasOne("AutoServices.Core.Domain.Car", null)
+                        .WithMany("FileToApis")
+                        .HasForeignKey("CarId");
+                });
+
+            modelBuilder.Entity("AutoServices.Core.Domain.Car", b =>
+                {
+                    b.Navigation("FileToApis");
                 });
 #pragma warning restore 612, 618
         }

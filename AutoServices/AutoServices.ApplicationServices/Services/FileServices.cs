@@ -11,75 +11,62 @@ namespace AutoServices.ApplicationServices.Services
     {
         private readonly IHostEnvironment _webHost;
         private readonly AutoServicesContext _context;
-        public FileServices
-            (
-                IHostEnvironment webHost,
-                AutoServicesContext context
-            )
+
+        public FileServices(IHostEnvironment webHost, AutoServicesContext context)
         {
             _webHost = webHost;
             _context = context;
         }
 
-        public void FilesToApi(CarDto dto, Car car)
+        public void UploadFilesToDatabase(CarDto dto, Car car)
         {
             if (dto.Files != null && dto.Files.Count > 0)
             {
-                if (!Directory.Exists(_webHost.ContentRootPath + "\\multipleFileUpload\\"))
+                foreach (var image in dto.Files)
                 {
-                    Directory.CreateDirectory(_webHost.ContentRootPath + "\\multipleFileUpload\\");
-                }
-
-                foreach (var file in dto.Files)
-                {
-                    string uploadsFolder = Path.Combine(_webHost.ContentRootPath, "multipleFileUpload");
-                    string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    using (var target = new MemoryStream())
                     {
-                        file.CopyTo(fileStream);
-                        FileToApi path = new FileToApi
+                        FileToDatabase files = new FileToDatabase()
                         {
                             Id = Guid.NewGuid(),
-                            ExistingFilePath = uniqueFileName,
-                            CarId = car.Id
+                            ImageTitle = image.FileName,
+                            CarId = car.Id,
                         };
 
-                        _context.FileToApis.AddAsync(path);
+                        image.CopyTo(target);
+                        files.ImageData = target.ToArray();
+
+                        _context.FileToDatabases.Add(files);
                     }
                 }
             }
         }
-        public async Task<List<FileToApi>> RemoveImagesFromApi(FileToApiDto[] dtos)
+
+        public async Task<FileToDatabase> RemoveImageFromDatabase(FileToDatabaseDto dto)
         {
-            foreach (var dtosItem in dtos)
+            var image = await _context.FileToDatabases
+                .Where(x => x.Id == dto.Id)
+                .FirstOrDefaultAsync();
+
+            _context.FileToDatabases.Remove(image);
+            await _context.SaveChangesAsync();
+
+            return image;
+        }
+
+        public async Task<FileToDatabase> RemoveImagesFromDatabase(FileToDatabaseDto[] dtos)
+        {
+            foreach (var dto in dtos)
             {
-                var imageId = await _context.FileToApis
-                    .FirstOrDefaultAsync(x => x.ExistingFilePath == dtosItem.ExistingFilePath);
-                var filePath = _webHost.ContentRootPath + "\\multipleFileUpload\\"
-                    + imageId.ExistingFilePath;
-                if (File.Exists(filePath))
-                {
-                    File.Delete(filePath);
-                }
-                _context.FileToApis.Remove(imageId);
+                var image = await _context.FileToDatabases
+                    .Where(x => x.Id == dto.Id)
+                    .FirstOrDefaultAsync();
+
+                _context.FileToDatabases.Remove(image);
                 await _context.SaveChangesAsync();
             }
-            return null;
-        }
-        public async Task<FileToApi> RemoveImageFromApi(FileToApiDto dto)
-        {
-            var imageId = await _context.FileToApis
-                .FirstOrDefaultAsync(x => x.Id == dto.Id);
-            var filePath = _webHost.ContentRootPath + "\\multipleFileUpload\\"
-                + imageId.ExistingFilePath;
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-            _context.FileToApis.Remove(imageId);
-            await _context.SaveChangesAsync();
+
+
             return null;
         }
     }

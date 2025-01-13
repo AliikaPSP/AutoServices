@@ -43,24 +43,28 @@ namespace AutoServices.Controllers
             var cars = await _carsServices.DetailAsync(id);
             if (cars == null)
             {
-                return View("Error");
+                return NotFound();
             }
-            var images = await _context.FileToApis
+            var photos = await _context.FileToDatabases
                 .Where(x => x.CarId == id)
                 .Select(y => new ImageViewModel
                 {
-                    FilePath = y.ExistingFilePath,
+                    CarId = y.Id,
                     ImageId = y.Id,
+                    ImageData = y.ImageData,
+                    ImageTitle = y.ImageTitle,
+                    Image = string.Format("data:image/gif;base64,{0}", Convert.ToBase64String(y.ImageData))
                 }).ToArrayAsync();
 
             var vm = new CarsDetailsViewModel();
+
             vm.Id = cars.Id;
             vm.Make = cars.Make;
             vm.Model = cars.Model;
             vm.Year = cars.Year;
             vm.CreatedAt = cars.CreatedAt;
             vm.ModifiedAt = cars.ModifiedAt;
-            vm.Images.AddRange(images);
+            vm.Image.AddRange(photos);
             return View(vm);
 
         }
@@ -75,13 +79,16 @@ namespace AutoServices.Controllers
             }
 
 
-            var images = await _context.FileToApis
-                .Where(x => x.CarId == id)
-                .Select(y => new ImageViewModel
-                {
-                    FilePath = y.ExistingFilePath,
-                    ImageId = y.Id
-                }).ToArrayAsync();
+            var photos = await _context.FileToDatabases
+              .Where(x => x.CarId == id)
+              .Select(y => new ImageViewModel
+              {
+                  CarId = y.Id,
+                  ImageId = y.Id,
+                  ImageData = y.ImageData,
+                  ImageTitle = y.ImageTitle,
+                  Image = string.Format("data:image/gif;base64,{0}", Convert.ToBase64String(y.ImageData))
+              }).ToArrayAsync();
 
             var vm = new CarCreateUpdateViewModel();
             vm.Id = car.Id;
@@ -90,10 +97,10 @@ namespace AutoServices.Controllers
             vm.Year = car.Year;
             vm.CreatedAt = car.CreatedAt;
             vm.ModifiedAt = car.ModifiedAt;
-            vm.Image.AddRange(images);
+            vm.Image.AddRange(photos);
             return View("CreateUpdate", vm);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> Update(CarCreateUpdateViewModel vm)
         {
             var dto = new CarDto()
@@ -105,11 +112,12 @@ namespace AutoServices.Controllers
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
                 Files = vm.Files,
-                FilesToApiDtos = vm.Image
-                    .Select(x => new FileToApiDto
+                Image = vm.Image
+                    .Select(x => new FileToDatabaseDto
                     {
                         Id = x.ImageId,
-                        ExistingFilePath = x.FilePath,
+                        ImageData = x.ImageData,
+                        ImageTitle = x.ImageTitle,
                         CarId = x.CarId,
                     }).ToArray()
             };
@@ -128,12 +136,15 @@ namespace AutoServices.Controllers
             {
                 return NotFound();
             }
-            var images = await _context.FileToApis
+            var photos = await _context.FileToDatabases
                 .Where(x => x.CarId == id)
                 .Select(y => new ImageViewModel
                 {
-                    FilePath = y.ExistingFilePath,
+                    CarId = y.Id,
                     ImageId = y.Id,
+                    ImageData = y.ImageData,
+                    ImageTitle = y.ImageTitle,
+                    Image = string.Format("data:image/gif;base64,{0}", Convert.ToBase64String(y.ImageData))
                 }).ToArrayAsync();
 
             var vm = new CarDeleteViewModel();
@@ -143,7 +154,7 @@ namespace AutoServices.Controllers
             vm.Year = car.Year;
             vm.CreatedAt = car.CreatedAt;
             vm.ModifiedAt = car.ModifiedAt;
-            vm.Images.AddRange(images);
+            vm.Images.AddRange(photos);
             return View(vm);
         }
         [HttpPost]
@@ -175,12 +186,13 @@ namespace AutoServices.Controllers
                 CreatedAt = vm.CreatedAt,
                 ModifiedAt = vm.ModifiedAt,
                 Files = vm.Files,
-                FilesToApiDtos = vm.Image
-                    .Select(x => new FileToApiDto
+                Image = vm.Image
+                    .Select(x => new FileToDatabaseDto
                     {
                         Id = x.ImageId,
-                        ExistingFilePath = x.FilePath,
-                        CarId = x.CarId,
+                        ImageData = x.ImageData,
+                        ImageTitle = x.ImageTitle,
+                        CarId = x.CarId
                     }).ToArray()
             };
             var result = await _carsServices.Create(dto);
@@ -193,11 +205,11 @@ namespace AutoServices.Controllers
 
         public async Task<IActionResult> RemoveImage(ImageViewModel vm)
         {
-            var dto = new FileToApiDto()
+            var dto = new FileToDatabaseDto()
             {
                 Id = vm.ImageId
             };
-            var image = await _fileServices.RemoveImageFromApi(dto);
+            var image = await _fileServices.RemoveImageFromDatabase(dto);
             if (image == null)
             {
                 return RedirectToAction(nameof(Index));

@@ -3,6 +3,7 @@ using AutoServices.Core.Dto;
 using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Xml;
 
 namespace AutoServices.ApplicationServices.Services
 {
@@ -38,7 +39,12 @@ namespace AutoServices.ApplicationServices.Services
             domain.Year = dto.Year;
             domain.CreatedAt = dto.CreatedAt;
             domain.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, domain);
+
+            if (dto.Files != null)
+            {
+                _fileServices.UploadFilesToDatabase(dto, domain);
+            }
+
             _context.Cars.Update(domain);
             await _context.SaveChangesAsync();
             return domain;
@@ -48,15 +54,17 @@ namespace AutoServices.ApplicationServices.Services
         {
             var car = await _context.Cars
                 .FirstOrDefaultAsync(x => x.Id == id);
-            var images = await _context.FileToApis
+            var images = await _context.FileToDatabases
                 .Where(x => x.CarId == id)
-                .Select(y => new FileToApiDto
+                .Select(y => new FileToDatabaseDto
                 {
                     Id = y.Id,
+                    ImageTitle = y.ImageTitle,
                     CarId = y.CarId,
-                    ExistingFilePath = y.ExistingFilePath
                 }).ToArrayAsync();
-            await _fileServices.RemoveImagesFromApi(images);
+
+
+            await _fileServices.RemoveImagesFromDatabase(images);
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
             return car;
@@ -71,7 +79,10 @@ namespace AutoServices.ApplicationServices.Services
             car.Year = dto.Year;
             car.CreatedAt = DateTime.Now;
             car.ModifiedAt = DateTime.Now;
-            _fileServices.FilesToApi(dto, car);
+            if (dto.Files != null)
+            {
+                _fileServices.UploadFilesToDatabase(dto, car);
+            }
             await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
             return car;

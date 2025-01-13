@@ -9,6 +9,6 @@
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
 
-        public ICollection<FileToApi> FileToApis { get; set; }
+        public ICollection<FileToDatabase> FileToApis { get; set; }
     }
 }

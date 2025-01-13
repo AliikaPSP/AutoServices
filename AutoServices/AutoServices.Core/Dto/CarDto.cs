@@ -11,7 +11,7 @@ namespace AutoServices.Core.Dto
         public DateTime? CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
         public List<IFormFile> Files { get; set; }
-        public IEnumerable<FileToApiDto> FilesToApiDtos { get; set; }
-            = new List<FileToApiDto>();
+        public IEnumerable<FileToDatabaseDto> Image { get; set; }
+            = new List<FileToDatabaseDto>();
     }
 }
