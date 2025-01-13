@@ -100,7 +100,7 @@ namespace AutoServices.Controllers
             vm.Image.AddRange(photos);
             return View("CreateUpdate", vm);
         }
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> Update(CarCreateUpdateViewModel vm)
         {
             var dto = new CarDto()
