@@ -2,7 +2,6 @@ using AutoServices.ApplicationServices.Services;
 using AutoServices.Core.ServiceInterface;
 using AutoServices.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 namespace AutoServices
 {

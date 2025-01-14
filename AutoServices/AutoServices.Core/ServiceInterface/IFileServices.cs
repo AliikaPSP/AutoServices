@@ -1,6 +1,5 @@
 ﻿using AutoServices.Core.Domain;
 using AutoServices.Core.Dto;
-using System.Xml;
 
 namespace AutoServices.Core.ServiceInterface
 {
