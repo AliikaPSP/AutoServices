@@ -1,11 +1,47 @@
+using AutoServices.ApplicationServices.Services;
 using AutoServices.Core.Domain;
 using AutoServices.Core.Dto;
 using AutoServices.Core.ServiceInterface;
+using AutoServices.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace AutoServices.CarTest
 {
     public class CarTest : TestBase
     {
+        private AutoServicesContext GetInMemoryDbContext()
+        {
+            var options = new DbContextOptionsBuilder<AutoServicesContext>()
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .Options;
+
+            return new AutoServicesContext(options);
+        }
+
+        [Fact]
+        public async Task Create_ShouldAddCarToDatabase()
+        {
+            // Arrange
+            var context = GetInMemoryDbContext();
+            var carService = new CarsServices(context, null);
+            var carDto = new CarDto
+            {
+                Make = "Toyota",
+                Model = "Corolla",
+                Year = 2021
+            };
+
+            // Act
+            var createdCar = await carService.Create(carDto);
+
+            // Assert
+            Assert.NotNull(createdCar);
+            Assert.Equal("Toyota", createdCar.Make);
+            Assert.Equal("Corolla", createdCar.Model);
+            Assert.Equal(2021, createdCar.Year);
+            Assert.Equal(1, context.Cars.Count());
+        }
+
         [Fact]
         public async Task Should_AddCar_WhenValidDto()
         {
@@ -30,6 +66,7 @@ namespace AutoServices.CarTest
             Assert.True(result.CreatedAt <= DateTime.Now);
             Assert.True(result.ModifiedAt <= DateTime.Now);
         }
+
 
         [Fact]
         public async Task ShouldNot_AddEmptyCar_WhenReturnResult()
